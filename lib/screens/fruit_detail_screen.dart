@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fruit_hub/model.dart';
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
 
 class FruitDetailScreen extends StatelessWidget {
-  const FruitDetailScreen({Key? key}) : super(key: key);
-
+  const FruitDetailScreen({Key? key, required this.fruitSalad})
+      : super(key: key);
+  final FruitSalad fruitSalad;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +61,7 @@ class FruitDetailScreen extends StatelessWidget {
             tag: 'fruit',
             child: Center(
               child: Image.asset(
-                'assets/fruit.png',
+                'assets/${fruitSalad.imageUrl}.png',
                 height: 176.h,
                 width: 176.w,
               ),
@@ -83,7 +85,7 @@ class FruitDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Quinoa Fruit Salad',
+                    fruitSalad.name,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -113,7 +115,7 @@ class FruitDetailScreen extends StatelessWidget {
                             width: 24.h,
                           ),
                           Text(
-                            '1',
+                            '${fruitSalad.quantity}',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.w400,
@@ -140,7 +142,7 @@ class FruitDetailScreen extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        'N2000',
+                        'N${fruitSalad.price}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
@@ -167,8 +169,8 @@ class FruitDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           'One Pack Contains:',
+                          textAlign: TextAlign.start,
                           style: TextStyle(
-                            letterSpacing: 1,
                             fontWeight: FontWeight.w500,
                             fontSize: 20.sp,
                             color: const Color(0xff27214D),

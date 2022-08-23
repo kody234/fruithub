@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fruit_hub/model.dart';
 import 'package:fruit_hub/screens/cart_screen.dart';
 
 import '../utils/custom_form_field.dart';
@@ -7,12 +8,20 @@ import '../utils/custom_icon_button.dart';
 import '../utils/fruit_card.dart';
 import '../utils/navigation_manager.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -22,7 +31,7 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 47.h,
+                  height: 17.h,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 24),
@@ -30,7 +39,10 @@ class HomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomIconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _scaffoldKey.currentState?.openDrawer();
+                          print('hvhjv');
+                        },
                         icon: Icon(
                           Icons.menu_rounded,
                           size: 24.sp,
@@ -58,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                           Text(
                             'My basket',
                             style: TextStyle(
-                              color: Color(0xff27214D),
+                              color: const Color(0xff27214D),
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
                             ),
@@ -111,14 +123,17 @@ class HomeScreen extends StatelessWidget {
                   padding: EdgeInsets.only(right: 24.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      FruitCard(),
-                      FruitCard(),
-                    ],
+                    children: List.generate(
+                      FruitSalad.recommended.length,
+                      (index) => FruitCard(
+                          fruitSalad: FruitSalad.recommended[index],
+                          shadow: true,
+                          color: false),
+                    ),
                   ),
                 ),
                 SizedBox(
-                  height: 48.h,
+                  height: 28.h,
                 ),
                 DefaultTabController(
                     length: 4,
@@ -129,32 +144,45 @@ class HomeScreen extends StatelessWidget {
                             unselectedLabelStyle: TextStyle(
                                 fontSize: 16.sp, fontWeight: FontWeight.w500),
                             labelStyle: TextStyle(
-                                fontSize: 24.sp, fontWeight: FontWeight.w500),
+                                fontSize: 22.sp, fontWeight: FontWeight.w500),
                             unselectedLabelColor: const Color(0xff938DB5),
                             indicatorColor: const Color(0xffFFA451),
                             labelColor: const Color(0xff5D577E),
                             tabs: const [
                               Tab(
-                                text: 'demo',
+                                text: 'Hottest',
                               ),
                               Tab(
-                                text: 'demo',
+                                text: 'Popular',
                               ),
                               Tab(
-                                text: 'demo',
+                                text: 'New',
                               ),
                               Tab(
-                                text: 'demo',
+                                text: 'Top',
                               )
                             ]),
                         SizedBox(
                           height: 200.h,
-                          child: TabBarView(children: [
-                            Icon(Icons.bookmark),
-                            Icon(Icons.bookmark),
-                            Icon(Icons.bookmark),
-                            Icon(Icons.bookmark)
-                          ]),
+                          child: TabBarView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                CustomListView(
+                                  category: FruitSalad.hottest,
+                                ),
+                                CustomListView(
+                                  category: FruitSalad.popular,
+                                ),
+                                CustomListView(
+                                  category: FruitSalad.New,
+                                ),
+                                CustomListView(
+                                  category: FruitSalad.top,
+                                ),
+                              ]),
+                        ),
+                        SizedBox(
+                          height: 29.h,
                         ),
                       ],
                     )),
@@ -164,5 +192,27 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class CustomListView extends StatelessWidget {
+  const CustomListView({
+    Key? key,
+    required this.category,
+  }) : super(key: key);
+  final List<FruitSalad> category;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: category.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(right: 8.w, top: 10.h),
+            child: FruitCard(
+                fruitSalad: category[index], shadow: false, color: true),
+          );
+        });
   }
 }

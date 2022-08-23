@@ -1,36 +1,51 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fruit_hub/model.dart';
 import 'package:fruit_hub/screens/fruit_detail_screen.dart';
 import 'package:fruit_hub/utils/navigation_manager.dart';
 
 class FruitCard extends StatelessWidget {
-  FruitCard({
-    Key? key,
-  }) : super(key: key);
+  final FruitSalad fruitSalad;
+  final bool shadow;
+  final bool color;
+
+  FruitCard(
+      {Key? key,
+      required this.fruitSalad,
+      required this.shadow,
+      required this.color})
+      : super(key: key);
   NavigationManager navigationManager = NavigationManager();
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        navigationManager.push(context, const FruitDetailScreen());
+        navigationManager.push(
+            context,
+            FruitDetailScreen(
+              fruitSalad: fruitSalad,
+            ));
       },
       child: Container(
         height: 193.h,
         width: 152.w,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: color ? fruitSalad.color : Colors.white,
             borderRadius: BorderRadius.circular(
               16.r,
             ),
-            boxShadow: [
-              BoxShadow(
-                  spreadRadius: 2,
-                  blurRadius: 15,
-                  offset: const Offset(-5, 5),
-                  color: const Color(0xff202020).withOpacity(0.5))
-            ]),
+            boxShadow: shadow
+                ? [
+                    BoxShadow(
+                        spreadRadius: 2,
+                        blurRadius: 15,
+                        offset: const Offset(-5, 5),
+                        color: const Color(0xff202020).withOpacity(0.5))
+                  ]
+                : []),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -49,9 +64,10 @@ class FruitCard extends StatelessWidget {
               tag: 'fruit',
               child: Center(
                 child: Image.asset(
-                  'assets/fruit.png',
+                  'assets/${fruitSalad.imageUrl}.png',
                   height: 80.h,
                   width: 80.w,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -60,7 +76,8 @@ class FruitCard extends StatelessWidget {
             ),
             Center(
               child: Text(
-                'Honey lime combo',
+                fruitSalad.name,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16.sp,
@@ -75,7 +92,7 @@ class FruitCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'N2,000',
+                  'N${fruitSalad.price}',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
