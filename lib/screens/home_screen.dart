@@ -12,131 +12,156 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        backgroundColor: const Color(0xffE5E5E5),
-        body: SafeArea(
-            child: Padding(
-          padding: EdgeInsets.only(left: 24.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 47.h,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomIconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.menu_rounded,
-                        size: 24.sp,
-                        color: const Color(0xff27214D),
-                      ),
-                    ),
-                    CustomIconButton(
-                      onPressed: () {
-                        NavigationManager().push(context, const CartScreen());
-                      },
-                      icon: Icon(
-                        Icons.shopping_basket,
-                        size: 24.sp,
-                        color: const Color(0xffFFA451),
-                      ),
-                    ),
-                  ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(left: 24.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 47.h,
                 ),
-              ),
-              SizedBox(
-                height: 24.h,
-              ),
-              SizedBox(
-                width: 250,
-                child: Text(
-                  'Hello Tony, What fruit salad combo do you want today?',
+                Padding(
+                  padding: const EdgeInsets.only(right: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomIconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.menu_rounded,
+                          size: 24.sp,
+                          color: const Color(0xff27214D),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          CustomIconButton(
+                            onPressed: () {
+                              NavigationManager().push(
+                                context,
+                                const CartScreen(),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.shopping_basket,
+                              size: 24.sp,
+                              color: const Color(0xffFFA451),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            'My basket',
+                            style: TextStyle(
+                              color: Color(0xff27214D),
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                SizedBox(
+                  width: 250,
+                  child: Text(
+                    'Hello Tony, What fruit salad combo do you want today?',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20.sp,
+                      color: const Color(0xff5D577E),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 24.w),
+                  child: const CustomFormField(
+                    hintText: 'Search for fruit salad combos',
+                  ),
+                ),
+                SizedBox(
+                  height: 40.h,
+                ),
+                Text(
+                  'Recommended Combo',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 20.sp,
+                    fontSize: 24.sp,
                     color: const Color(0xff5D577E),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 24.h,
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 24.w),
-                child: const CustomFormField(
-                  hintText: 'Search for fruit salad combos',
+                SizedBox(
+                  height: 24.h,
                 ),
-              ),
-              SizedBox(
-                height: 40.h,
-              ),
-              Text(
-                'Recommended Combo',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 24.sp,
-                  color: const Color(0xff5D577E),
+                Padding(
+                  padding: EdgeInsets.only(right: 24.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      FruitCard(),
+                      FruitCard(),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 24.h,
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 24.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FruitCard(),
-                    FruitCard(),
-                  ],
+                SizedBox(
+                  height: 48.h,
                 ),
-              ),
-              SizedBox(
-                height: 48.h,
-              ),
-              TabBar(
-                  indicatorSize: TabBarIndicatorSize.label,
-                  unselectedLabelStyle:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
-                  labelStyle:
-                      TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500),
-                  unselectedLabelColor: const Color(0xff938DB5),
-                  indicatorColor: const Color(0xffFFA451),
-                  labelColor: const Color(0xff5D577E),
-                  tabs: const [
-                    Tab(
-                      text: 'demo',
-                    ),
-                    Tab(
-                      text: 'demo',
-                    ),
-                    Tab(
-                      text: 'demo',
-                    ),
-                    Tab(
-                      text: 'demo',
-                    )
-                  ]),
-              const Expanded(
-                child: TabBarView(children: [
-                  Icon(Icons.bookmark),
-                  Icon(Icons.bookmark),
-                  Icon(Icons.bookmark),
-                  Icon(Icons.bookmark)
-                ]),
-              ),
-            ],
+                DefaultTabController(
+                    length: 4,
+                    child: Column(
+                      children: [
+                        TabBar(
+                            indicatorSize: TabBarIndicatorSize.label,
+                            unselectedLabelStyle: TextStyle(
+                                fontSize: 16.sp, fontWeight: FontWeight.w500),
+                            labelStyle: TextStyle(
+                                fontSize: 24.sp, fontWeight: FontWeight.w500),
+                            unselectedLabelColor: const Color(0xff938DB5),
+                            indicatorColor: const Color(0xffFFA451),
+                            labelColor: const Color(0xff5D577E),
+                            tabs: const [
+                              Tab(
+                                text: 'demo',
+                              ),
+                              Tab(
+                                text: 'demo',
+                              ),
+                              Tab(
+                                text: 'demo',
+                              ),
+                              Tab(
+                                text: 'demo',
+                              )
+                            ]),
+                        SizedBox(
+                          height: 200.h,
+                          child: TabBarView(children: [
+                            Icon(Icons.bookmark),
+                            Icon(Icons.bookmark),
+                            Icon(Icons.bookmark),
+                            Icon(Icons.bookmark)
+                          ]),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
           ),
-        )),
+        ),
       ),
     );
   }

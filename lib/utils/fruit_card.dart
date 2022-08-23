@@ -27,6 +27,7 @@ class FruitCard extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                   spreadRadius: 2,
+                  blurRadius: 15,
                   offset: const Offset(-5, 5),
                   color: const Color(0xff202020).withOpacity(0.5))
             ]),
