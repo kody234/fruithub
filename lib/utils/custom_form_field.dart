@@ -21,10 +21,10 @@ class CustomFormField extends StatelessWidget {
         filled: true,
         focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(10.r)),
+            borderRadius: BorderRadius.circular(16.r)),
         enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(10.r)),
+            borderRadius: BorderRadius.circular(16.r)),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
@@ -11,6 +12,12 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(onPressed: onPressed, icon: icon);
+    return IconButton(
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(
+          maxHeight: 20.h,
+        ),
+        onPressed: onPressed,
+        icon: icon);
   }
 }

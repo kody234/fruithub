@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
     var baseTheme = ThemeData(brightness: brightness);
 
     return baseTheme.copyWith(
-      textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
+      textTheme: GoogleFonts.gorditasTextTheme(baseTheme.textTheme),
     );
   }
 }
