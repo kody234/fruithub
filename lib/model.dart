@@ -35,13 +35,13 @@ class FruitSalad {
         price: 1500,
         name: 'Berry mango combo',
         imageUrl: 'fruit_salad3',
-        categories: [],
+        categories: ['hottest'],
         color: getRandomColor()),
     FruitSalad(
         price: 3000,
         name: 'Strawberry bash',
         imageUrl: 'fruit_salad4',
-        categories: [],
+        categories: ['hottest'],
         color: getRandomColor()),
     FruitSalad(
         price: 2500,
@@ -71,7 +71,7 @@ class FruitSalad {
         price: 2000,
         name: 'Veggie fruit salad',
         imageUrl: 'fruit_salad9',
-        categories: [],
+        categories: ['hottest'],
         color: getRandomColor()),
     FruitSalad(
         price: 2000,
@@ -98,6 +98,19 @@ class FruitSalad {
         categories: ['recommended'],
         color: getRandomColor()),
   ];
+  static List<FruitSalad> recommended = samples
+      .where((element) => element.categories.contains('recommended'))
+      .toList();
+  static List<FruitSalad> hottest = samples
+      .where((element) => element.categories.contains('hottest'))
+      .toList();
+  static List<FruitSalad> top =
+      samples.where((element) => element.categories.contains('top')).toList();
+  static List<FruitSalad> popular = samples
+      .where((element) => element.categories.contains('popular'))
+      .toList();
+  static List<FruitSalad> New =
+      samples.where((element) => element.categories.contains('new')).toList();
 }
 
 Color getRandomColor() {
