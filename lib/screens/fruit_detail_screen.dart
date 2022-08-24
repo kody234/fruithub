@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fruit_hub/model.dart';
+import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
 
 class FruitDetailScreen extends StatelessWidget {

@@ -6,16 +6,18 @@ class CustomFormField extends StatelessWidget {
     Key? key,
     this.controller,
     required this.hintText,
+     this.icon,
   }) : super(key: key);
   final TextEditingController? controller;
   final String hintText;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search),
+        prefixIcon: Icon(icon),
         hintText: hintText,
         fillColor: const Color(0xffF3F1F1),
         filled: true,
