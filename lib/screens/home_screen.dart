@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fruit_hub/model.dart';
+import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/screens/cart_screen.dart';
 
 import '../utils/custom_form_field.dart';
@@ -101,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: EdgeInsets.only(right: 24.w),
                   child: const CustomFormField(
+                    icon: Icons.search,
                     hintText: 'Search for fruit salad combos',
                   ),
                 ),
