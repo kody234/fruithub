@@ -10,6 +10,7 @@ class CongratulationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool buttonActivated = false;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -67,6 +68,7 @@ class CongratulationScreen extends StatelessWidget {
                   height: 56.h,
                   width: 133.w,
                   child: CustomElevatedButton(
+                    activated: buttonActivated,
                     label: 'Track order',
                     backgroundColor: const Color(0xffFFA451),
                     onPressed: () {

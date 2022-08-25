@@ -61,4 +61,19 @@ class AuthenticationServices {
           context: context, label: e.message!, backGroundColor: Colors.red);
     }
   }
+
+  Future<void> resetPassword(
+      {required String email, required BuildContext context}) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(
+        context: context,
+        label: e.message.toString(),
+        backGroundColor: Colors.red,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }

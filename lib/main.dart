@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/authentication_screens/login_screen.dart';
@@ -71,6 +72,7 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -83,14 +85,31 @@ class _RootState extends State<Root> {
               );
             }
             if (snapshot.data?.emailVerified == false) {
-              return const Scaffold(
+              return Scaffold(
                 body: Center(
-                  child: Text('verify your mail to continue'),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('verify your mail to continue'),
+                      ElevatedButton(
+                          onPressed: () async {
+                            setState(() {});
+                            debugPrint(snapshot.data?.emailVerified.toString());
+                            await snapshot.data?.reload();
+                          },
+                          child: const Text('click to verify'))
+                    ],
+                  ),
                 ),
               );
-            } else {
+            } else if (snapshot.data?.emailVerified == true) {
               return const HomeScreen();
             }
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           } else {
             return const Scaffold(
               body: Center(
@@ -100,4 +119,11 @@ class _RootState extends State<Root> {
           }
         });
   }
+}
+
+String? errorChecker({required String error}) {
+  if (error == 'user-not-found') {
+    return '';
+  }
+  return null;
 }
