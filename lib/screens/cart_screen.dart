@@ -89,6 +89,7 @@ class WhiteContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool buttonActivated = false;
     return Container(
       padding: EdgeInsets.only(top: 40.h),
       width: MediaQuery.of(context).size.width,
@@ -158,6 +159,7 @@ class WhiteContainer extends StatelessWidget {
                       height: 56.h,
                       width: 199.w,
                       child: CustomElevatedButton(
+                        activated: buttonActivated,
                         backgroundColor: const Color(0xffFFA451),
                         label: 'Checkout',
                         onPressed: () {

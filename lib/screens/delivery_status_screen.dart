@@ -10,6 +10,7 @@ class DeliveryStatusScreen extends StatefulWidget {
 
 class _DeliveryStatusScreenState extends State<DeliveryStatusScreen> {
   int stepperIndex = 0;
+  bool buttonActivated = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

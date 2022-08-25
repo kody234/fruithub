@@ -10,6 +10,7 @@ class FruitDetailScreen extends StatelessWidget {
   final FruitSalad fruitSalad;
   @override
   Widget build(BuildContext context) {
+    bool buttonActivated = false;
     return Scaffold(
       backgroundColor: const Color(0xffFFA451),
       body: SafeArea(
@@ -230,6 +231,7 @@ class FruitDetailScreen extends StatelessWidget {
                         height: 56.h,
                         width: 219,
                         child: CustomElevatedButton(
+                          activated: buttonActivated,
                           onPressed: () {},
                           label: 'Add to basket',
                           backgroundColor: const Color(0xffFFA451),

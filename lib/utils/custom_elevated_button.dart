@@ -7,10 +7,12 @@ class CustomElevatedButton extends StatelessWidget {
     required this.backgroundColor,
     required this.onPressed,
     required this.label,
+    this.activated,
   }) : super(key: key);
   final Color backgroundColor;
   final String label;
   final VoidCallback onPressed;
+  final bool? activated;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +22,17 @@ class CustomElevatedButton extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           primary: backgroundColor),
       onPressed: onPressed,
-      child: Text(
-        label,
-        style: TextStyle(
-            fontWeight: FontWeight.w500, fontSize: 16.sp, color: Colors.white),
-      ),
+      child: activated!
+          ? const CircularProgressIndicator(
+              color: Colors.white,
+            )
+          : Text(
+              label,
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.sp,
+                  color: Colors.white),
+            ),
     );
   }
 }

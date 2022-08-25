@@ -7,6 +7,7 @@ import 'onboarding2.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   OnBoardingScreen({Key? key}) : super(key: key);
+  bool buttonActivated = false;
 
   final NavigationManager _navigationManager = NavigationManager();
   @override
@@ -54,6 +55,7 @@ class OnBoardingScreen extends StatelessWidget {
                           height: 56.h,
                           width: MediaQuery.of(context).size.width,
                           child: CustomElevatedButton(
+                            activated: buttonActivated,
                             onPressed: () {
                               _navigationManager.pushReplacement(
                                   context, const OnBoardingScreen2());
