@@ -1,15 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/screens/cart_screen.dart';
 
+import '../services/firebase_authentication_services.dart';
 import '../utils/custom_form_field.dart';
 import '../utils/custom_icon_button.dart';
 import '../utils/fruit_card.dart';
 import '../utils/navigation_manager.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.auth}) : super(key: key);
+  final FirebaseAuth auth;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,7 +24,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(child: Row()),
+            ElevatedButton(
+              onPressed: () {
+                AuthenticationServices(auth: widget.auth).signOut();
+              },
+              child: const Text('sign out'),
+            )
+          ],
+        ),
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(

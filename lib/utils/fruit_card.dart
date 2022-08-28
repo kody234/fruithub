@@ -61,7 +61,7 @@ class FruitCard extends StatelessWidget {
               ),
             ),
             Hero(
-              tag: 'fruit',
+              tag: fruitSalad.name,
               child: Center(
                 child: Image.asset(
                   'assets/${fruitSalad.imageUrl}.png',
