@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
+import 'package:lottie/lottie.dart';
 
 import '../utils/custom_modal_sheet.dart';
 
@@ -89,6 +93,7 @@ class WhiteContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     bool buttonActivated = false;
     return Container(
       padding: EdgeInsets.only(top: 40.h),
@@ -96,30 +101,44 @@ class WhiteContainer extends StatelessWidget {
       color: Colors.white,
       child: Column(
         children: [
-          ListTile(
-            leading: Image.asset('assets/fruit.png', height: 40.h, width: 40.w),
-            title: Text(
-              'Quinoa fruit salad',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.sp,
-                  color: Colors.black),
-            ),
-            subtitle: Text(
-              '2packs',
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14.sp,
-                  color: Colors.black),
-            ),
-            trailing: Text(
-              'N20,000',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.sp,
-                  color: const Color(0xff27214D)),
-            ),
-          ),
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('User')
+                  .doc(user?.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                List cartList = FruitSalad.samples
+                    .where((element) =>
+                        element.productId ==
+                        snapshot.data?['cart'].contains({element.productId: 1}))
+                    .toList();
+
+                if (snapshot.hasError) {
+                  return const Text('has error');
+                }
+                if (snapshot.hasData) {
+                  if (!snapshot.data?['cart'].isEmpty) {
+                    return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: cartList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              color: Colors.yellowAccent,
+                            ),
+                          );
+                        });
+                  } else {
+                    return const CustomAnimation();
+                  }
+                }
+                return const Center(child: CircularProgressIndicator());
+              }),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -173,6 +192,62 @@ class WhiteContainer extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomAnimation extends StatelessWidget {
+  const CustomAnimation({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Lottie.network(
+            'https://assets6.lottiefiles.com/packages/lf20_izbswkzm.json',
+            height: 500.h,
+            width: 500.w),
+        Text(
+          'Your Basket is empty',
+          style: TextStyle(
+              letterSpacing: 1,
+              fontSize: 25.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.black),
+        )
+      ],
+    );
+  }
+}
+
+class CustomListTile extends StatelessWidget {
+  const CustomListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Image.asset('assets/fruit.png', height: 40.h, width: 40.w),
+      title: Text(
+        'Quinoa fruit salad',
+        style: TextStyle(
+            fontWeight: FontWeight.w500, fontSize: 16.sp, color: Colors.black),
+      ),
+      subtitle: Text(
+        '2packs',
+        style: TextStyle(
+            fontWeight: FontWeight.w400, fontSize: 14.sp, color: Colors.black),
+      ),
+      trailing: Text(
+        'N20,000',
+        style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 16.sp,
+            color: const Color(0xff27214D)),
       ),
     );
   }

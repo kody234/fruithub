@@ -1,16 +1,24 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/model/fruit_salad_model.dart';
+import 'package:fruit_hub/services/firestore_database_services.dart';
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
 
-class FruitDetailScreen extends StatelessWidget {
+class FruitDetailScreen extends StatefulWidget {
   const FruitDetailScreen({Key? key, required this.fruitSalad})
       : super(key: key);
   final FruitSalad fruitSalad;
+
+  @override
+  State<FruitDetailScreen> createState() => _FruitDetailScreenState();
+}
+
+class _FruitDetailScreenState extends State<FruitDetailScreen> {
+  int quantity = 1;
   @override
   Widget build(BuildContext context) {
     bool buttonActivated = false;
+
     return Scaffold(
       backgroundColor: const Color(0xffFFA451),
       body: SafeArea(
@@ -59,10 +67,10 @@ class FruitDetailScreen extends StatelessWidget {
             height: 10.h,
           ),
           Hero(
-            tag: 'fruit',
+            tag: widget.fruitSalad.name,
             child: Center(
               child: Image.asset(
-                'assets/${fruitSalad.imageUrl}.png',
+                'assets/${widget.fruitSalad.imageUrl}.png',
                 height: 176.h,
                 width: 176.w,
               ),
@@ -86,7 +94,7 @@ class FruitDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    fruitSalad.name,
+                    widget.fruitSalad.name,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -102,21 +110,30 @@ class FruitDetailScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            height: 32.h,
-                            width: 32.w,
-                            child: const Center(child: Icon(Icons.remove)),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: const Color(0xff333333), width: 2.w),
+                          GestureDetector(
+                            onTap: () {
+                              if (quantity > 1) {
+                                setState(() {
+                                  quantity--;
+                                });
+                              }
+                            },
+                            child: Container(
+                              height: 32.h,
+                              width: 32.w,
+                              child: const Center(child: Icon(Icons.remove)),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: const Color(0xff333333), width: 2.w),
+                              ),
                             ),
                           ),
                           SizedBox(
                             width: 24.h,
                           ),
                           Text(
-                            '${fruitSalad.quantity}',
+                            '$quantity',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.w400,
@@ -127,23 +144,32 @@ class FruitDetailScreen extends StatelessWidget {
                           SizedBox(
                             width: 24.h,
                           ),
-                          Container(
-                            height: 32.h,
-                            width: 32.w,
-                            child: const Center(
-                                child: Icon(
-                              Icons.add,
-                              color: Color(0xffFFA451),
-                            )),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xffFFF2E7),
+                          GestureDetector(
+                            onTap: () {
+                              if (quantity >= 1) {
+                                setState(() {
+                                  quantity++;
+                                });
+                              }
+                            },
+                            child: Container(
+                              height: 32.h,
+                              width: 32.w,
+                              child: const Center(
+                                  child: Icon(
+                                Icons.add,
+                                color: Color(0xffFFA451),
+                              )),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffFFF2E7),
+                              ),
                             ),
                           ),
                         ],
                       ),
                       Text(
-                        'N${fruitSalad.price}',
+                        'N${widget.fruitSalad.price}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
@@ -232,7 +258,13 @@ class FruitDetailScreen extends StatelessWidget {
                         width: 219,
                         child: CustomElevatedButton(
                           activated: buttonActivated,
-                          onPressed: () {},
+                          onPressed: () async {
+                            debugPrint(widget.fruitSalad.productId);
+                            await FireStoreServices().addToCart(
+                                productId: widget.fruitSalad.productId,
+                                quantity: quantity,
+                                context: context);
+                          },
                           label: 'Add to basket',
                           backgroundColor: const Color(0xffFFA451),
                         ),

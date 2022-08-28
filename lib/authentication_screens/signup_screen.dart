@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fruit_hub/services/firestore_database_services.dart';
 import 'package:fruit_hub/utils/custom_snackbar.dart';
 
 import 'package:fruit_hub/utils/navigation_manager.dart';
@@ -137,10 +138,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 password: passwordController.text.trim(),
                                 context: context,
                               );
-                              setState(() {
-                                buttonActivated = false;
-                              });
-                              Navigator.pop(context);
+                              await FireStoreServices()
+                                  .createUser(name: nameController.text.trim());
                             } else {
                               showSnackBar(
                                   context: context,
@@ -190,11 +189,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: <TextSpan>[
                           TextSpan(
                             recognizer: TapGestureRecognizer()
-                              ..onTap =
-                                  () => NavigationManager().pushReplacement(
-                                        context,
-                                        const LoginScreen(),
-                                      ),
+                              ..onTap = () => NavigationManager().pop(
+                                    context,
+                                  ),
                             text: ' Log In',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,

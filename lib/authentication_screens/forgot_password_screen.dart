@@ -116,9 +116,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             setState(() {
                               buttonActivated = false;
                             });
+
+                            Navigator.pop(context);
                           }
                         },
-                        label: 'Verify',
+                        label: 'Reset password',
                         backgroundColor: const Color(0xffFFA451),
                       ),
                     ),

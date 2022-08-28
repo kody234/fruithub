@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/authentication_screens/login_screen.dart';
+import 'package:fruit_hub/authentication_screens/verify_email_screen.dart';
 import 'package:fruit_hub/screens/home_screen.dart';
 import 'package:fruit_hub/screens/onboarding/onboarding.dart';
 
@@ -30,27 +31,29 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder: (context, child) => MaterialApp(
-          theme: _buildTheme(Brightness.light),
-          home: FutureBuilder(
-              future: _initialize,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(child: Text('error'));
-                }
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Hive.box('onboarding').isEmpty
-                      ? OnBoardingScreen()
-                      : const Root();
-                }
+        theme: _buildTheme(Brightness.light),
+        home: FutureBuilder(
+          future: _initialize,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('error'));
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Hive.box('onboarding').isEmpty
+                  ? OnBoardingScreen()
+                  : const Root();
+            }
 
-                return const Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(
-                      color: Color(0xffFFA451),
-                    ),
-                  ),
-                );
-              })),
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xffFFA451),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -71,45 +74,33 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
     return StreamBuilder<User?>(
         stream: AuthenticationServices(auth: _auth).user,
         builder: (context, AsyncSnapshot<User?> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
+            void rebuildRoot() {
+              setState(() {});
+            }
+
             if (snapshot.data?.uid == null) {
               return LoginScreen(
                 auth: _auth,
               );
             }
             if (snapshot.data?.emailVerified == false) {
-              return Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('verify your mail to continue'),
-                      ElevatedButton(
-                          onPressed: () async {
-                            setState(() {});
-                            debugPrint(snapshot.data?.emailVerified.toString());
-                            await snapshot.data?.reload();
-                          },
-                          child: const Text('click to verify'))
-                    ],
-                  ),
-                ),
+              return VerifyEmailScreen(
+                snapshot: snapshot,
+                rebuild: rebuildRoot,
               );
-            } else if (snapshot.data?.emailVerified == true) {
-              return const HomeScreen();
+            } else {
+              return HomeScreen(
+                auth: _auth,
+              );
             }
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
           } else {
             return const Scaffold(
               body: Center(

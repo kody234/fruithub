@@ -20,7 +20,7 @@ class AuthenticationServices {
       debugPrint(e.code);
       showSnackBar(
           context: context,
-          label: e.message.toString(),
+          label: e.code.toString(),
           backGroundColor: Colors.red);
     }
   }
@@ -35,6 +35,8 @@ class AuthenticationServices {
       await sendEmailVerificationLink(context: context);
       debugPrint('success');
     } on FirebaseAuthException catch (e) {
+      showSnackBar(
+          context: context, label: e.message!, backGroundColor: Colors.red);
       debugPrint(e.message);
     }
   }
@@ -55,6 +57,7 @@ class AuthenticationServices {
           context: context,
           label: 'Verification link has been sent',
           backGroundColor: Colors.green);
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       debugPrint(e.message);
       showSnackBar(
@@ -66,6 +69,10 @@ class AuthenticationServices {
       {required String email, required BuildContext context}) async {
     try {
       await auth.sendPasswordResetEmail(email: email);
+      showSnackBar(
+          context: context,
+          label: 'Check email for reset link',
+          backGroundColor: Colors.green);
     } on FirebaseAuthException catch (e) {
       showSnackBar(
         context: context,
