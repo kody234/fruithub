@@ -261,9 +261,13 @@ class _FruitDetailScreenState extends State<FruitDetailScreen> {
                           onPressed: () async {
                             debugPrint(widget.fruitSalad.productId);
                             await FireStoreServices().addToCart(
-                                productId: widget.fruitSalad.productId,
-                                quantity: quantity,
-                                context: context);
+                              productId: widget.fruitSalad.productId,
+                              quantity: quantity,
+                              context: context,
+                              basePrice: widget.fruitSalad.price,
+                              productName: widget.fruitSalad.name,
+                              imageUrl: widget.fruitSalad.imageUrl,
+                            );
                           },
                           label: 'Add to basket',
                           backgroundColor: const Color(0xffFFA451),

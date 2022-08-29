@@ -6,6 +6,8 @@ import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
 import 'package:lottie/lottie.dart';
 
+import '../utils/custom_error_animation.dart';
+import '../utils/custom_list_tile.dart';
 import '../utils/custom_modal_sheet.dart';
 
 class CartScreen extends StatelessWidget {
@@ -77,7 +79,7 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             height: 40.h,
           ),
-          const Expanded(
+          Expanded(
             child: WhiteContainer(),
           )
         ],
@@ -86,169 +88,136 @@ class CartScreen extends StatelessWidget {
   }
 }
 
-class WhiteContainer extends StatelessWidget {
-  const WhiteContainer({
+class WhiteContainer extends StatefulWidget {
+  WhiteContainer({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<WhiteContainer> createState() => _WhiteContainerState();
+}
+
+class _WhiteContainerState extends State<WhiteContainer> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     bool buttonActivated = false;
+
     return Container(
       padding: EdgeInsets.only(top: 40.h),
       width: MediaQuery.of(context).size.width,
       color: Colors.white,
-      child: Column(
-        children: [
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('User')
-                  .doc(user?.uid)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                      snapshot) {
-                List cartList = FruitSalad.samples
-                    .where((element) =>
-                        element.productId ==
-                        snapshot.data?['cart'].contains({element.productId: 1}))
-                    .toList();
+      child: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('User')
+              .doc(user?.uid)
+              .collection('cart')
+              .snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            num count = 0;
+            int getTotalPrice() {
+              for (var element in snapshot.data!.docs) {
+                count += (element['quantity'] * element['basePrice']);
+              }
+              debugPrint('ddad ${count.toString()}');
+              return count.toInt();
+            }
 
-                if (snapshot.hasError) {
-                  return const Text('has error');
-                }
-                if (snapshot.hasData) {
-                  if (!snapshot.data?['cart'].isEmpty) {
-                    return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: cartList.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              color: Colors.yellowAccent,
-                            ),
-                          );
-                        });
-                  } else {
-                    return const CustomAnimation();
-                  }
-                }
-                return const Center(child: CircularProgressIndicator());
-              }),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                height: 80.h,
-                width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            if (snapshot.hasError) {
+              return const Text('has error');
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data!.docs.isNotEmpty) {
+                getTotalPrice();
+                return Column(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Total',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.sp,
-                              color: Colors.black),
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                        ),
-                        Text(
-                          'N20,000',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 24.sp,
-                              color: const Color(0xff27214D)),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 56.h,
-                      width: 199.w,
-                      child: CustomElevatedButton(
-                        activated: buttonActivated,
-                        backgroundColor: const Color(0xffFFA451),
-                        label: 'Checkout',
-                        onPressed: () {
-                          customModalSheet(context);
-                        },
+                    Expanded(
+                      flex: 6,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data?.docs.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                  padding: EdgeInsets.only(bottom: 20.h),
+                                  child: CustomListTile(
+                                    quantity: snapshot.data!.docs[index]
+                                        ['quantity'],
+                                    name: snapshot.data!.docs[index]
+                                        ['productName'],
+                                    price: snapshot.data!.docs[index]
+                                            ['basePrice'] *
+                                        snapshot.data!.docs[index]['quantity'],
+                                    imageUrl: snapshot.data!.docs[index]
+                                        ['imageUrl'],
+                                    productId: snapshot.data!.docs[index]
+                                        ['productId'],
+                                  ));
+                            }),
                       ),
-                    )
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          height: 80.h,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Total',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16.sp,
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 8.h,
+                                  ),
+                                  Text(
+                                    'N$count',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 24.sp,
+                                        color: const Color(0xff27214D)),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 56.h,
+                                width: 199.w,
+                                child: CustomElevatedButton(
+                                  activated: buttonActivated,
+                                  backgroundColor: const Color(0xffFFA451),
+                                  label: 'Checkout',
+                                  onPressed: () {
+                                    customModalSheet(context);
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomAnimation extends StatelessWidget {
-  const CustomAnimation({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Lottie.network(
-            'https://assets6.lottiefiles.com/packages/lf20_izbswkzm.json',
-            height: 500.h,
-            width: 500.w),
-        Text(
-          'Your Basket is empty',
-          style: TextStyle(
-              letterSpacing: 1,
-              fontSize: 25.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.black),
-        )
-      ],
-    );
-  }
-}
-
-class CustomListTile extends StatelessWidget {
-  const CustomListTile({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Image.asset('assets/fruit.png', height: 40.h, width: 40.w),
-      title: Text(
-        'Quinoa fruit salad',
-        style: TextStyle(
-            fontWeight: FontWeight.w500, fontSize: 16.sp, color: Colors.black),
-      ),
-      subtitle: Text(
-        '2packs',
-        style: TextStyle(
-            fontWeight: FontWeight.w400, fontSize: 14.sp, color: Colors.black),
-      ),
-      trailing: Text(
-        'N20,000',
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16.sp,
-            color: const Color(0xff27214D)),
-      ),
+                );
+              } else {
+                return const CustomAnimation();
+              }
+            }
+            return const Center(child: CircularProgressIndicator());
+          }),
     );
   }
 }

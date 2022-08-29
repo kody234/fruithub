@@ -20,13 +20,22 @@ class FireStoreServices {
 
   Future<void> addToCart(
       {required String productId,
+      required String productName,
+      required String imageUrl,
+      required int basePrice,
       required int quantity,
       required BuildContext context}) async {
     try {
-      await userCollection.doc(user?.uid).update({
-        'cart': FieldValue.arrayUnion([
-          {productId: quantity}
-        ])
+      await userCollection
+          .doc(user?.uid)
+          .collection('cart')
+          .doc(productId)
+          .set({
+        'productId': productId,
+        'productName': productName,
+        'imageUrl': imageUrl,
+        'basePrice': basePrice,
+        'quantity': quantity,
       });
       showSnackBar(
           context: context,
@@ -41,15 +50,13 @@ class FireStoreServices {
   }
 
   Future<void> deleteFromCart(
-      {required String productId,
-      required int quantity,
-      required BuildContext context}) async {
+      {required String productId, required BuildContext context}) async {
     try {
-      await userCollection.doc(user?.uid).update({
-        'cart': FieldValue.arrayRemove([
-          {productId: quantity}
-        ])
-      });
+      await userCollection
+          .doc(user?.uid)
+          .collection('cart')
+          .doc(productId)
+          .delete();
       showSnackBar(
           context: context,
           label: 'Item has been removed from basket',
