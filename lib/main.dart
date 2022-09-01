@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/authentication_screens/login_screen.dart';
 import 'package:fruit_hub/authentication_screens/verify_email_screen.dart';
+import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/screens/home_screen.dart';
 import 'package:fruit_hub/screens/onboarding/onboarding.dart';
 
@@ -15,6 +16,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
+  Hive.registerAdapter(FruitSaladAdapter());
+  await Hive.openBox('favourite');
   await Hive.openBox('onboarding');
 
   runApp(const MyApp());

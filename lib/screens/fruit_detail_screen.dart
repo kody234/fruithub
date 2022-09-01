@@ -3,11 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/services/firestore_database_services.dart';
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
+import 'package:fruit_hub/utils/custom_snackbar.dart';
+import 'package:hive/hive.dart';
+
+import '../utils/fruit_card.dart';
 
 class FruitDetailScreen extends StatefulWidget {
-  const FruitDetailScreen({Key? key, required this.fruitSalad})
+  const FruitDetailScreen({Key? key, required this.fruitSalad, this.rebuild})
       : super(key: key);
   final FruitSalad fruitSalad;
+  final VoidCallback? rebuild;
 
   @override
   State<FruitDetailScreen> createState() => _FruitDetailScreenState();
@@ -18,6 +23,7 @@ class _FruitDetailScreenState extends State<FruitDetailScreen> {
   @override
   Widget build(BuildContext context) {
     bool buttonActivated = false;
+    Box box = Hive.box('favourite');
 
     return Scaffold(
       backgroundColor: const Color(0xffFFA451),
@@ -243,15 +249,36 @@ class _FruitDetailScreenState extends State<FruitDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        height: 48.h,
-                        width: 48.w,
-                        child: const Icon(
-                          Icons.favorite_border,
-                          color: Color(0xffFFA451),
+                      InkWell(
+                        onTap: () async {
+                          if (box.containsKey(widget.fruitSalad.productId)) {
+                            await box.delete(widget.fruitSalad.productId);
+                            showSnackBar(
+                                context: context,
+                                label: 'Item is removed from wishlist',
+                                backGroundColor: Colors.green);
+                            widget.rebuild!();
+                            setState(() {});
+                          } else {
+                            await Hive.box('favourite').put(
+                                widget.fruitSalad.productId, widget.fruitSalad);
+                            showSnackBar(
+                                context: context,
+                                label: 'Item is saved to wishlist',
+                                backGroundColor: Colors.green);
+                            widget.rebuild!();
+                            setState(() {});
+                          }
+                        },
+                        splashColor: const Color(0xffFFA451),
+                        child: Container(
+                          height: 48.h,
+                          width: 48.w,
+                          child: CustomFavouriteIcon(
+                              box: box, fruitSalad: widget.fruitSalad),
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Color(0xffFFF7F0)),
                         ),
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Color(0xffFFF7F0)),
                       ),
                       SizedBox(
                         height: 56.h,

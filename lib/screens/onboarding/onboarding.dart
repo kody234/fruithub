@@ -7,7 +7,7 @@ import 'onboarding2.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   OnBoardingScreen({Key? key}) : super(key: key);
-  bool buttonActivated = false;
+  final bool buttonActivated = false;
 
   final NavigationManager _navigationManager = NavigationManager();
   @override

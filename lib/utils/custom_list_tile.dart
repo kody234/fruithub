@@ -80,3 +80,42 @@ class CustomListTile extends StatelessWidget {
     );
   }
 }
+
+class DrawerCustomListTile extends StatelessWidget {
+  const DrawerCustomListTile({
+    Key? key,
+    required this.title,
+    required this.icon,
+    required this.onTap,
+  }) : super(key: key);
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: InkWell(
+        onTap: onTap,
+        splashColor: Colors.black,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 30.h),
+          child: ListTile(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.r)),
+            tileColor: const Color(0xffFFA451),
+            leading: Icon(
+              icon,
+              size: 35.sp,
+              color: Colors.white,
+            ),
+            title: Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19.sp),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

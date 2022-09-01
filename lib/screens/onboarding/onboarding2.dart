@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/form_validation/form_validation.dart';
 import 'package:fruit_hub/main.dart';
-import 'package:fruit_hub/screens/home_screen.dart';
+
 import 'package:fruit_hub/utils/navigation_manager.dart';
 import 'package:hive/hive.dart';
 

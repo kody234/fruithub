@@ -12,7 +12,6 @@ import '../../utils/custom_elevated_button.dart';
 import '../../utils/custom_form_field.dart';
 import '../form_validation/form_validation.dart';
 import '../services/firebase_authentication_services.dart';
-import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key, this.auth}) : super(key: key);
