@@ -2,9 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fruit_hub/model/fruit_salad_model.dart';
+
 import 'package:fruit_hub/utils/custom_elevated_button.dart';
-import 'package:lottie/lottie.dart';
 
 import '../utils/custom_error_animation.dart';
 import '../utils/custom_list_tile.dart';
@@ -79,7 +78,7 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             height: 40.h,
           ),
-          Expanded(
+          const Expanded(
             child: WhiteContainer(),
           )
         ],
@@ -89,7 +88,7 @@ class CartScreen extends StatelessWidget {
 }
 
 class WhiteContainer extends StatefulWidget {
-  WhiteContainer({
+  const WhiteContainer({
     Key? key,
   }) : super(key: key);
 

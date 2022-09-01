@@ -5,7 +5,7 @@ import 'package:fruit_hub/utils/custom_elevated_button.dart';
 import 'package:fruit_hub/utils/custom_snackbar.dart';
 
 class VerifyEmailScreen extends StatelessWidget {
-  User? user = FirebaseAuth.instance.currentUser;
+  final User? user = FirebaseAuth.instance.currentUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final AsyncSnapshot snapshot;

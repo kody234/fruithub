@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/screens/cart_screen.dart';
 
-import '../services/firebase_authentication_services.dart';
+import '../utils/custom_drawer.dart';
 import '../utils/custom_form_field.dart';
 import '../utils/custom_icon_button.dart';
+
+import '../utils/custom_list_view.dart';
 import '../utils/fruit_card.dart';
 import '../utils/navigation_manager.dart';
 
@@ -20,23 +22,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  String name = '';
+  void rebuild() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    List searchedItems = FruitSalad.samples
+        .where((element) => element.name.contains(name))
+        .toList();
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(child: Row()),
-            ElevatedButton(
-              onPressed: () {
-                AuthenticationServices(auth: widget.auth).signOut();
-              },
-              child: const Text('sign out'),
-            )
-          ],
-        ),
-      ),
+      drawer: CustomDrawer(widget: widget),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -56,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       CustomIconButton(
                         onPressed: () {
                           _scaffoldKey.currentState?.openDrawer();
-                          print('hvhjv');
+                          debugPrint('hvhjv');
                         },
                         icon: Icon(
                           Icons.menu_rounded,
@@ -115,7 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: 24.w),
-                  child: const CustomFormField(
+                  child: CustomFormField(
+                    action: (val) {
+                      setState(() {
+                        name = val;
+                      });
+                    },
                     icon: Icons.search,
                     hintText: 'Search for fruit salad combos',
                   ),
@@ -123,112 +127,126 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 40.h,
                 ),
-                Text(
-                  'Recommended Combo',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 24.sp,
-                    color: const Color(0xff5D577E),
-                  ),
-                ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 24.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      FruitSalad.recommended.length,
-                      (index) => FruitCard(
-                          fruitSalad: FruitSalad.recommended[index],
-                          shadow: true,
-                          color: false),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 28.h,
-                ),
-                DefaultTabController(
-                    length: 4,
-                    child: Column(
-                      children: [
-                        TabBar(
-                            indicatorSize: TabBarIndicatorSize.label,
-                            unselectedLabelStyle: TextStyle(
-                                fontSize: 16.sp, fontWeight: FontWeight.w500),
-                            labelStyle: TextStyle(
-                                fontSize: 22.sp, fontWeight: FontWeight.w500),
-                            unselectedLabelColor: const Color(0xff938DB5),
-                            indicatorColor: const Color(0xffFFA451),
-                            labelColor: const Color(0xff5D577E),
-                            tabs: const [
-                              Tab(
-                                text: 'Hottest',
+                name == ''
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Recommended Combo',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 24.sp,
+                              color: const Color(0xff5D577E),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 24.h,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 24.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                FruitSalad.recommended.length,
+                                (index) => FruitCard(
+                                    rebuild: rebuild,
+                                    fruitSalad: FruitSalad.recommended[index],
+                                    shadow: true,
+                                    color: false),
                               ),
-                              Tab(
-                                text: 'Popular',
-                              ),
-                              Tab(
-                                text: 'New',
-                              ),
-                              Tab(
-                                text: 'Top',
-                              )
-                            ]),
-                        SizedBox(
-                          height: 200.h,
-                          child: TabBarView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                CustomListView(
-                                  category: FruitSalad.hottest,
-                                ),
-                                CustomListView(
-                                  category: FruitSalad.popular,
-                                ),
-                                CustomListView(
-                                  category: FruitSalad.New,
-                                ),
-                                CustomListView(
-                                  category: FruitSalad.top,
-                                ),
-                              ]),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 28.h,
+                          ),
+                          DefaultTabController(
+                              length: 4,
+                              child: Column(
+                                children: [
+                                  TabBar(
+                                      indicatorSize: TabBarIndicatorSize.label,
+                                      unselectedLabelStyle: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500),
+                                      labelStyle: TextStyle(
+                                          fontSize: 22.sp,
+                                          fontWeight: FontWeight.w500),
+                                      unselectedLabelColor:
+                                          const Color(0xff938DB5),
+                                      indicatorColor: const Color(0xffFFA451),
+                                      labelColor: const Color(0xff5D577E),
+                                      tabs: const [
+                                        Tab(
+                                          text: 'Hottest',
+                                        ),
+                                        Tab(
+                                          text: 'Popular',
+                                        ),
+                                        Tab(
+                                          text: 'New',
+                                        ),
+                                        Tab(
+                                          text: 'Top',
+                                        )
+                                      ]),
+                                  SizedBox(
+                                    height: 200.h,
+                                    child: TabBarView(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        children: [
+                                          CustomListView(
+                                            category: FruitSalad.hottest,
+                                            rebuild: rebuild,
+                                          ),
+                                          CustomListView(
+                                            category: FruitSalad.popular,
+                                            rebuild: rebuild,
+                                          ),
+                                          CustomListView(
+                                            category: FruitSalad.New,
+                                            rebuild: rebuild,
+                                          ),
+                                          CustomListView(
+                                            category: FruitSalad.top,
+                                            rebuild: rebuild,
+                                          ),
+                                        ]),
+                                  ),
+                                  SizedBox(
+                                    height: 29.h,
+                                  ),
+                                ],
+                              )),
+                        ],
+                      )
+                    : SizedBox(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 24.w),
+                          child: GridView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: searchedItems.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 20.w,
+                                      mainAxisSpacing: 20.h),
+                              itemBuilder: (context, index) {
+                                return FruitCard(
+                                    rebuild: rebuild,
+                                    fruitSalad: searchedItems[index],
+                                    shadow: false,
+                                    color: true);
+                              }),
                         ),
-                        SizedBox(
-                          height: 29.h,
-                        ),
-                      ],
-                    )),
+                      )
               ],
             ),
           ),
         ),
       ),
     );
-  }
-}
-
-class CustomListView extends StatelessWidget {
-  const CustomListView({
-    Key? key,
-    required this.category,
-  }) : super(key: key);
-  final List<FruitSalad> category;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: category.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(right: 8.w, top: 10.h),
-            child: FruitCard(
-                fruitSalad: category[index], shadow: false, color: true),
-          );
-        });
   }
 }

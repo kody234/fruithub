@@ -62,7 +62,7 @@ Future<dynamic> customModalSheet(BuildContext context) {
                 SizedBox(
                   height: 16.h,
                 ),
-                CustomFormField(
+                const CustomFormField(
                   hintText: '10th avenue, Lekki, Lagos State',
                 ),
                 SizedBox(

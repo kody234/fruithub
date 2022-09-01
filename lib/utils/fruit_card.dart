@@ -1,30 +1,34 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fruit_hub/model/fruit_salad_model.dart';
 import 'package:fruit_hub/screens/fruit_detail_screen.dart';
 import 'package:fruit_hub/utils/navigation_manager.dart';
+import 'package:hive/hive.dart';
 
 class FruitCard extends StatelessWidget {
   final FruitSalad fruitSalad;
   final bool shadow;
   final bool color;
+  final VoidCallback? rebuild;
 
   FruitCard(
       {Key? key,
       required this.fruitSalad,
       required this.shadow,
-      required this.color})
+      required this.color,
+      this.rebuild})
       : super(key: key);
-  NavigationManager navigationManager = NavigationManager();
+  final NavigationManager navigationManager = NavigationManager();
 
   @override
   Widget build(BuildContext context) {
+    Box box = Hive.box('favourite');
     return InkWell(
       onTap: () {
         navigationManager.push(
             context,
             FruitDetailScreen(
+              rebuild: rebuild,
               fruitSalad: fruitSalad,
             ));
       },
@@ -33,7 +37,7 @@ class FruitCard extends StatelessWidget {
         width: 152.w,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-            color: color ? fruitSalad.color : Colors.white,
+            color: color ? Color(fruitSalad.color) : Colors.white,
             borderRadius: BorderRadius.circular(
               16.r,
             ),
@@ -54,11 +58,7 @@ class FruitCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: Icon(
-                Icons.favorite_border,
-                color: const Color(0xffFFA451),
-                size: 25.sp,
-              ),
+              child: CustomFavouriteIcon(box: box, fruitSalad: fruitSalad),
             ),
             Hero(
               tag: fruitSalad.name,
@@ -117,6 +117,30 @@ class FruitCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CustomFavouriteIcon extends StatelessWidget {
+  const CustomFavouriteIcon({
+    Key? key,
+    required this.box,
+    required this.fruitSalad,
+  }) : super(key: key);
+
+  final Box box;
+  final FruitSalad fruitSalad;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      box.containsKey(fruitSalad.productId)
+          ? Icons.favorite
+          : Icons.favorite_border,
+      color: box.containsKey(fruitSalad.productId)
+          ? Colors.red
+          : const Color(0xffFFA451),
+      size: 25.sp,
     );
   }
 }
